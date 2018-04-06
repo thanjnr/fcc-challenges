@@ -1,0 +1,90 @@
+<!Doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="framework.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col c12 result">
+                <h1>0</h1>
+                <span id="history"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col c3">
+                <a href="javascript:;" data-value="ac" class="btn btn-lg key">AC</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="ce" class="btn btn-lg key">CE</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="47" class="btn btn-lg key">&divide;</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="42" class="btn btn-lg key">&times;</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col c3">
+                <a href="javascript:;" data-value="55" class="btn btn-lg key">7</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="56" class="btn btn-lg key">8</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="57" class="btn btn-lg key">9</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="45" class="btn btn-lg key">-</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col c3">
+                <a href="javascript:;" data-value="52" class="btn btn-lg key">4</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="53" class="btn btn-lg key">5</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="54" class="btn btn-lg key">6</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="43" class="btn btn-lg key">+</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col c3">
+                <a href="javascript:;" data-value="49" class="btn btn-lg key" value="1">1</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="50" class="btn btn-lg key">2</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="51" class="btn btn-lg key">3</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="13" class="btn btn-lg key">=</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col c3">
+                <a href="javascript:;" data-value="48" class="btn btn-lg key">0</a>
+            </div>
+            <div class="col c3">
+                <a href="javascript:;" data-value="46" class="btn btn-lg key">.</a>
+            </div>
+        </div>
+    </div>
+
+    <audio data-key="76" src="sounds/tink.wav"></audio>
+
+    <script src="calculator.js"></script>
+    <script src="start.js"></script>
+</body>
+</html>
