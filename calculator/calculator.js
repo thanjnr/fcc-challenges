@@ -6,6 +6,37 @@ var calculator = (function () {
     var allowedKeys = [13, 42, 43, 45, 46, 47, 61, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
     //47:divide 42:multiply 45:subtract 43:add
     const OPERATION_REGEX = /[+\-\/*]/;
+    var currentState = new State();
+
+    function State() {
+        this.input = '';
+        this.reset = reset;
+        this.addInput = addInput;
+        this.isEqualToPreviousInput = isEqualToPreviousInput;
+        this.undoLastInput = undoLastInput;
+        this.updateInput = updateInput;
+        
+        function reset() {
+            this.input = '';
+        }
+
+        function addInput(input) {
+            this.input = this.input + input;
+        }        
+
+        function updateInput(input) {
+            this.input = input;
+        }
+
+        function undoLastInput() {
+            var currentInput = this.input;
+            this.input = currentInput.replace(currentInput[currentInput.length - 1], '');
+        }
+
+        function isEqualToPreviousInput(input) {
+            return this.input[this.input.length - 1] === input;
+        }
+    }
 
     function calculation(num, operation) {
         function add(num1, num2) {
@@ -54,14 +85,14 @@ var calculator = (function () {
 
     function keyPressed(event) {
         playSound();
-        updateCalculation(event.keyCode);
+        updateInput(event.keyCode);
     }
 
     function mousePress(e) {
         playSound();
         var dataValue = e.target.attributes['data-value'].value
         var input = dataValue != "ac" && dataValue != "ce" ? Number.parseFloat(dataValue) : dataValue;
-        updateCalculation(input);
+        updateInput(input);
     }
 
     function removeTransition(e) {
@@ -75,37 +106,44 @@ var calculator = (function () {
         audio.currentTime = 0;
         audio.play();
     }
-    
-    function updateCalculation(keyCode) {        
-        if (keyCode === "ac" || keyCode === "ce") {
-            console.log("RESET");
-            previousInput = "";            
-            updateResult("0");         
-            updateHistory("", true);
+
+    function updateInput(keyCode) {
+        if (keyCode === "ac") {
+            currentState.reset();
+            updateHistory(currentState.input);
+            updateResult(currentState.input);        
             return;
         }
 
-        if (allowedKeys.indexOf(keyCode) < 0) {
+        if(keyCode === "ce") {
+            currentState.undoLastInput();
+            updateResult(currentState.input);   
             return;
         }
 
-        var currentInput = String.fromCharCode(keyCode);
-        updateHistory(currentInput);
-        previousInput = previousInput + currentInput;
-        console.log(previousInput);
-
-        if (!isAccetableNumber(currentInput)) {
-            var operrands = previousInput.split(OPERATION_REGEX);
-            var matchedOperation = previousInput.match(OPERATION_REGEX);
-            console.log(matchedOperation);
-            console.log(operrands);
-            if (operrands.length > 1 && operrands[1] !== "") {
-                var calc = calculation(operrands[0], matchedOperation[0]);
-                var result = calc(operrands[1]);
-                updateResult(result);
-                previousInput = result + currentInput;
-            }
+        if (!isValidInput(keyCode)) {
+            return;
         }
+
+        if(keyCode === 13) {
+            updateCalculation();
+            return;
+        }
+        
+        currentState.addInput(String.fromCharCode(keyCode));
+        updateResult(currentState.input);
+    }
+
+    function updateCalculation() {      
+        var result = eval(currentState.input);
+        updateHistory(currentState.input);
+        currentState.updateInput(result);
+        updateResult(result);        
+    }
+
+    function isValidInput(keyCode) {
+        return allowedKeys.indexOf(keyCode) >= 0 && 
+            !currentState.isEqualToPreviousInput(String.fromCharCode(keyCode));
     }
 
     function updateHistory(currentInput, reset = false) {
@@ -115,16 +153,12 @@ var calculator = (function () {
             historyElement.innerHTML = "";
             return;
         }
-        historyElement.innerHTML = historyElement.innerHTML + currentInput;
+        historyElement.innerHTML = currentInput;
     }
 
     function updateResult(result) {        
         var resultElement = document.querySelector('.result h1');
         resultElement.innerHTML = result;
-    }
-
-    function isAccetableNumber(value) {
-        return Number(value).toString() !== 'NaN' || value === '.';
     }
 
     return {
