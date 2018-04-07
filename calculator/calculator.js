@@ -1,11 +1,9 @@
 'use strict'
 
 var calculator = (function () {
-    var previousInput = '';
-    var operators = [42, 43, 45, 47, 61];
+    const OPERATION_REGEX = /[+\-\/*]/;
     var allowedKeys = [13, 42, 43, 45, 46, 47, 61, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57];
     //47:divide 42:multiply 45:subtract 43:add
-    const OPERATION_REGEX = /[+\-\/*]/;
     var currentState = new State();
 
     function State() {
