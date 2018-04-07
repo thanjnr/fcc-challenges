@@ -75,8 +75,8 @@ var calculator = (function () {
         audio.currentTime = 0;
         audio.play();
     }
-
-    function updateCalculation(keyCode) {
+    
+    function updateCalculation(keyCode) {        
         if (keyCode === "ac" || keyCode === "ce") {
             console.log("RESET");
             previousInput = "";            
@@ -97,8 +97,9 @@ var calculator = (function () {
         if (!isAccetableNumber(currentInput)) {
             var operrands = previousInput.split(OPERATION_REGEX);
             var matchedOperation = previousInput.match(OPERATION_REGEX);
-
-            if (operrands.length > 1) {
+            console.log(matchedOperation);
+            console.log(operrands);
+            if (operrands.length > 1 && operrands[1] !== "") {
                 var calc = calculation(operrands[0], matchedOperation[0]);
                 var result = calc(operrands[1]);
                 updateResult(result);
