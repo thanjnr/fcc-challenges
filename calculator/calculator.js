@@ -23,7 +23,7 @@ var calculator = (function () {
         }        
 
         function updateInput(input) {
-            this.input = input;
+            this.input = input.toString();
         }
 
         function undoLastInput() {
@@ -32,7 +32,8 @@ var calculator = (function () {
         }
 
         function isEqualToPreviousInput(input) {
-            return this.input[this.input.length - 1] === input;
+            var isOperation = input.match(OPERATION_REGEX);            
+            return isOperation && this.input[this.input.length - 1] === input;
         }
     }
 
@@ -134,13 +135,37 @@ var calculator = (function () {
 
     function updateCalculation() {      
         var result = eval(currentState.input);
+
+        var inputsArray = currentState.input.split(/([+\-\/*])/g);
+        var allInputString = currentState.input;
+        var precedenceRegxs = [/[*\/]/, /[+\-]/];
+        
+        for(var j = 0; j < precedenceRegxs.length; j++) { 
+            var matchExists = allInputString.match(precedenceRegxs[j]);
+            while(matchExists && matchExists.index !== 0) {
+                var inputsArray = allInputString.split(/([+\-\/*])/g);
+                console.log(inputsArray);
+                for(var i = 0; i < inputsArray.length; i++) {
+                    console.log(`${j}-${i}`)
+                    if(inputsArray[i].match(precedenceRegxs[j])) {
+                        inputsArray = calculateAtIndex(inputsArray, i);
+                        allInputString = inputsArray.join('');
+                        matchExists = allInputString.match(precedenceRegxs[j]);
+                        console.log(allInputString);
+                        break;
+                    }
+                }
+            }            
+        }
+        console.log(`RESULT: ${allInputString}`);
+
         updateHistory(currentState.input);
         currentState.updateInput(result);
         updateResult(result);        
     }
 
-    function isValidInput(keyCode) {
-        return allowedKeys.indexOf(keyCode) >= 0 && 
+    function isValidInput(keyCode) {        
+        return allowedKeys.indexOf(keyCode) >= 0 &&
             !currentState.isEqualToPreviousInput(String.fromCharCode(keyCode));
     }
 
@@ -157,6 +182,13 @@ var calculator = (function () {
     function updateResult(result) {        
         var resultElement = document.querySelector('.result h1');
         resultElement.innerHTML = result;
+    }
+
+    function calculateAtIndex(inputsArray, index) {
+        var result = calculation(inputsArray[index - 1], inputsArray[index])(inputsArray[index + 1]);
+        inputsArray.splice(index - 1, 3, result);
+        
+        return inputsArray;
     }
 
     return {
